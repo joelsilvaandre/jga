@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JGA Stuttgart 2026 — Grand Prix Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  :root {
+    --red: #E8002D;
+    --red-dark: #a3001f;
+    --black: #0a0a0a;
+    --carbon: #111111;
+    --dark: #1a1a1a;
+    --mid: #2a2a2a;
+    --silver: #c0c0c0;
+    --light: #e8e8e8;
+    --white: #f5f5f5;
+    --yellow: #FFD700;
+    --gap: 2rem;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--light);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* Carbon fiber texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 0, transparent 50%),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 0, transparent 50%);
+    background-size: 6px 6px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-track {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 110%, rgba(232,0,45,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(232,0,45,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 50%, rgba(232,0,45,0.08) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  /* Racing stripes */
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--red) 0px, var(--red) 40px, var(--black) 40px, var(--black) 50px);
+    animation: stripe-scroll 1s linear infinite;
+  }
+
+  @keyframes stripe-scroll {
+    from { background-position: 0 0; }
+    to { background-position: 50px 0; }
+  }
+
+  .hero-content { position: relative; z-index: 1; }
+
+  .flag-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.5rem;
+  }
+  .flag-label::before, .flag-label::after {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 2px;
+    background: var(--red);
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.5rem, 12vw, 9rem);
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    text-shadow: 0 0 80px rgba(232,0,45,0.3);
+    margin-bottom: 0.3rem;
+    animation: fade-up 0.8s ease both;
+  }
+
+  .hero-title .accent { color: var(--red); }
+
+  .hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 2rem;
+    animation: fade-up 0.8s 0.15s ease both;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fade-up 0.8s 0.3s ease both;
+  }
+
+  .hero-meta-item {
+    text-align: center;
+  }
+  .hero-meta-item .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--red);
+    display: block;
+  }
+  .hero-meta-item .lbl {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+  }
+
+  /* Racing number badge */
+  .number-badge {
+    position: absolute;
+    top: 3rem; right: 3rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 12rem;
+    line-height: 1;
+    color: rgba(232,0,45,0.07);
+    letter-spacing: -0.05em;
+    pointer-events: none;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MAIN CONTENT */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* DAY SECTION */
+  .day-section {
+    margin-bottom: 5rem;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .day-number-block {
+    background: var(--red);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 90px;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+    padding-right: 2rem;
+  }
+
+  .day-number-block .day-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: white;
+  }
+  .day-number-block .day-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .day-title-block {
+    background: var(--dark);
+    flex: 1;
+    padding: 1rem 1.5rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .day-title-block h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+
+  .day-title-block .day-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-top: 0.1rem;
+  }
+
+  .day-theme-badge {
+    align-self: center;
+    margin-left: auto;
+    padding-right: 1rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--yellow);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--red), transparent);
+  }
+
+  .event {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    animation: fade-in 0.5s ease both;
+  }
+
+  .event::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 0.7rem;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 12px rgba(232,0,45,0.6);
+  }
+
+  .event-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .event-card {
+    background: var(--carbon);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-left: 3px solid var(--red);
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .event-card:hover {
+    border-left-color: var(--yellow);
+    transform: translateX(3px);
+  }
+
+  .event-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 100%;
+    background: linear-gradient(to left, rgba(232,0,45,0.04), transparent);
+    pointer-events: none;
+  }
+
+  .event-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .event-card h3 .icon { font-size: 1.1rem; }
+
+  .event-venue {
+    font-size: 0.78rem;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0.2rem 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .event-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #aaa;
+  }
+
+  .event-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+  .tag-action { background: rgba(232,0,45,0.15); color: var(--red); border: 1px solid rgba(232,0,45,0.3); }
+  .tag-food { background: rgba(255,215,0,0.1); color: var(--yellow); border: 1px solid rgba(255,215,0,0.2); }
+  .tag-drinks { background: rgba(100,150,255,0.1); color: #8ab4f8; border: 1px solid rgba(100,150,255,0.2); }
+  .tag-f1 { background: rgba(192,192,192,0.1); color: var(--silver); border: 1px solid rgba(192,192,192,0.2); }
+  .tag-night { background: rgba(130,80,255,0.1); color: #c4a0ff; border: 1px solid rgba(130,80,255,0.2); }
+
+  /* TROPHY SECTION */
+  .tip-box {
+    background: var(--dark);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-left: 4px solid var(--yellow);
+    padding: 1rem 1.25rem;
+    margin-top: 2rem;
+  }
+  .tip-box .tip-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 0.4rem;
+  }
+  .tip-box p { font-size: 0.88rem; color: #aaa; line-height: 1.6; }
+
+  /* OVERVIEW GRID */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .overview-card {
+    background: var(--dark);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .overview-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+  .overview-card .ov-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .overview-card .ov-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .overview-card .ov-sub { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+
+  /* DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0 2rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #555;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: #2a2a2a;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid #1e1e1e;
+  }
+  footer .checkered {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+  }
+  footer .checkered span {
+    width: 24px; height: 24px;
+  }
+  footer .checkered span:nth-child(odd) { background: var(--white); }
+  footer .checkered span:nth-child(even) { background: var(--black); border: 1px solid #333; }
+  footer p {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #444;
+  }
+
+  /* MAP */
+  .map-section {
+    margin-bottom: 4rem;
+  }
+
+  .map-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .map-tab {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    background: var(--dark);
+    color: #666;
+    border: 1px solid #2a2a2a;
+    border-bottom: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .map-tab:hover { color: var(--light); }
+
+  .map-tab.active {
+    background: var(--carbon);
+    color: var(--white);
+    border-color: #3a3a3a;
+    border-bottom: 2px solid var(--red);
+  }
+
+  .map-tab[data-day="1"].active { border-bottom-color: #8ab4f8; }
+  .map-tab[data-day="2"].active { border-bottom-color: var(--red); }
+  .map-tab[data-day="3"].active { border-bottom-color: var(--yellow); }
+  .map-tab[data-day="4"].active { border-bottom-color: #6fcf97; }
+
+  #map {
+    height: 460px;
+    border: 1px solid #2a2a2a;
+    background: var(--carbon);
+  }
+
+  .map-marker {
+    width: 28px; height: 28px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .map-marker-inner {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    transform: rotate(45deg);
+  }
+
+  .leaflet-popup-content-wrapper {
+    background: var(--carbon);
+    border: 1px solid #333;
+    border-radius: 2px;
+    color: var(--light);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .leaflet-popup-tip { background: var(--carbon); }
+
+  .map-popup-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.2rem;
+  }
+
+  .map-popup-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.1rem;
+  }
+
+  .map-popup-venue {
+    font-size: 0.78rem;
+    color: #888;
+  }
+
+  @media (max-width: 600px) {
+    .number-badge { display: none; }
+    .day-header { flex-direction: column; }
+    .day-number-block { flex-direction: row; gap: 0.5rem; clip-path: none; padding-right: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-track"></div>
+  <div class="number-badge">JGA</div>
+  <div class="hero-content">
+    <div class="flag-label">Junggesellenabschied 2026</div>
+    <h1 class="hero-title">GRAND<br><span class="accent">PRIX</span><br>STUTTGART</h1>
+    <p class="hero-sub">30. April — 3. Mai · 9 Piloten</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span class="val">4</span><span class="lbl">Tage</span></div>
+      <div class="hero-meta-item"><span class="val">9</span><span class="lbl">Piloten</span></div>
+      <div class="hero-meta-item"><span class="val">∞</span><span class="lbl">Erinnerungen</span></div>
+    </div>
+  </div>
+</section>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <div class="section-divider">Schnellübersicht</div>
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="ov-icon">🏎️</div>
+      <div class="ov-title">Go-Kart Race</div>
+      <div class="ov-sub">Kart-o-Mania Stuttgart</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🏛️</div>
+      <div class="ov-title">Mercedes Museum</div>
+      <div class="ov-sub">Motorsport-Geschichte</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🔫</div>
+      <div class="ov-title">Laser Tag</div>
+      <div class="ov-sub">Kornwestheim</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🔐</div>
+      <div class="ov-title">Escape Room</div>
+      <div class="ov-sub">TeamEscape Stuttgart</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🎳</div>
+      <div class="ov-title">Bowling Night</div>
+      <div class="ov-sub">City Bowling Stuttgart</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🍻</div>
+      <div class="ov-title">Craft Beer &amp; Grill</div>
+      <div class="ov-sub">Carl's Brauhaus</div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="section-divider">Karten-Übersicht</div>
+  <div class="map-section">
+    <div class="map-tabs">
+      <button class="map-tab active" data-day="all">Alle Tage</button>
+      <button class="map-tab" data-day="1">Tag 1 · Do.</button>
+      <button class="map-tab" data-day="2">Tag 2 · Fr.</button>
+      <button class="map-tab" data-day="3">Tag 3 · Sa.</button>
+      <button class="map-tab" data-day="4">Tag 4 · So.</button>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <!-- ═══════════════ DONNERSTAG ═══════════════ -->
+  <div class="day-section">
+    <div class="day-header">
+      <div class="day-number-block">
+        <span class="day-num">01</span>
+        <span class="day-label">Do.</span>
+      </div>
+      <div class="day-title-block">
+        <h2>Qualifying Night — Anreise &amp; Eröffnung</h2>
+        <span class="day-date">Donnerstag, 30. April 2026 · ab 22:00 Uhr</span>
+      </div>
+      <div class="day-theme-badge">⚑ QUALIFYING</div>
+    </div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="event-time">22:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🚗</span> Ankunft &amp; Check-in</h3>
+          <div class="event-venue">Zentrales Airbnb / Hotel Stuttgart-Mitte</div>
+          <div class="event-desc">Alle 9 Piloten treffen ein. Empfang mit eiskalten Bieren und dem obligatorischen JGA-Starterpaket: F1-Startnummer, Rennfahrer-Krawatte fürs Wochenende und ein kleines Racing-Goodie-Bag für den Junggesellen (Rennhelm-Shot-Glas, F1-Kalender, etc.).</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">F1 Ritual</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">22:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🍺</span> Pre-Race Briefing</h3>
+          <div class="event-venue">Jigger &amp; Spoon — Gymnasiumstraße 33</div>
+          <div class="event-desc">Erster Abend in einer der besten Cocktailbars Stuttgarts, einem echten Speakeasy in einem ehemaligen Banktresor. Eröffnungs-Shot-Runde, erster gemeinsamer Umtrunk. Wer den schlechtesten F1-Witz macht, bezahlt die erste Runde.</div>
+          <div class="event-tags">
+            <span class="tag tag-drinks">Cocktails</span>
+            <span class="tag tag-night">Nachtleben</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">00:30+</div>
+        <div class="event-card">
+          <h3><span class="icon">🎶</span> Freie Fahrt — Nightlife</h3>
+          <div class="event-venue">Schwarz Weiß Bar oder Easy Street — Stuttgart Mitte</div>
+          <div class="event-desc">Optional: weiter in eine der legendären kleinen Bars in der Wilhelmstraße. Spätestens gegen 2 Uhr zurück — das Qualifying war kurz, morgen beginnt der Große Preis.</div>
+          <div class="event-tags">
+            <span class="tag tag-night">Optional</span>
+            <span class="tag tag-drinks">Bars</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════ FREITAG ═══════════════ -->
+  <div class="day-section">
+    <div class="day-header">
+      <div class="day-number-block">
+        <span class="day-num">02</span>
+        <span class="day-label">Fr.</span>
+      </div>
+      <div class="day-title-block">
+        <h2>Race Day One — Speed &amp; Steel</h2>
+        <span class="day-date">Freitag, 1. Mai 2026 · Feiertag · ganztags</span>
+      </div>
+      <div class="day-theme-badge">⚑ RACE DAY</div>
+    </div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="event-time">10:00</div>
+        <div class="event-card">
+          <h3><span class="icon">☕</span> Fahrer-Frühstück</h3>
+          <div class="event-venue">Zuhause / Bäckerei in der Nähe</div>
+          <div class="event-desc">Großes gemeinsames Frühstück in der Unterkunft — Kraft tanken für den härtesten Tag. Jeder bringt Proviant mit. Mit F1-Playlist im Hintergrund und dem Klassiker: wer am spätesten aufsteht, macht das Frühstück.</div>
+          <div class="event-tags">
+            <span class="tag tag-food">Frühstück</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">11:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🏎️</span> GO-KART GRAND PRIX — Das Hauptrennen</h3>
+          <div class="event-venue">Kart-o-Mania Stuttgart · Langwiesenweg 30, 70327 Stuttgart ⭐ 4.5</div>
+          <div class="event-desc">Der absolute Höhepunkt des Tages! Indoor-Rennstrecke mit echten Karts, Qualifying-Runde + Hauptrennen für alle 9 Piloten. F1-Modus: Jeder bekommt eine Startnummer, der Junggeselle fährt Nummer 1. Zeitlauf, dann finales Rennen. Sieger bekommt eine selbst gebastelte "Weltmeister"-Sektflasche. Letzter muss eine Challenge erfüllen. Vorab unbedingt reservieren!</div>
+          <div class="event-tags">
+            <span class="tag tag-action">Action</span>
+            <span class="tag tag-f1">F1 Feeling</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">12:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🏆</span> Siegerehrung &amp; Foto-Session</h3>
+          <div class="event-venue">Kart-o-Mania Lounge</div>
+          <div class="event-desc">Direkt nach dem Rennen: Champagner-Dusche (Sekt, natürlich) für den Sieger, Gruppenfotos mit Helmen und Overalls, Siegerpokal-Übergabe an den Junggesellen — denn er ist der Hauptdarsteller dieses Wochenendes.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">Zeremonie</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">14:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🌭</span> Mittagessen im Biergarten</h3>
+          <div class="event-venue">Biergarten im Schlossgarten · Am Schlossgarten 18</div>
+          <div class="event-desc">Kurze Pause mit kühlem Bier und schwäbischer Küche unter freiem Himmel. Der Schlossgarten-Biergarten ist direkt am Hauptbahnhof gelegen — perfekter Zwischenstopp.</div>
+          <div class="event-tags">
+            <span class="tag tag-food">Mittagessen</span>
+            <span class="tag tag-drinks">Bier</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">15:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🏛️</span> Mercedes-Benz Museum — Pflichtprogramm für jeden F1-Fan</h3>
+          <div class="event-venue">Mercedes-Benz Museum · Mercedesstraße 100, 70372 Stuttgart ⭐ 4.8</div>
+          <div class="event-desc">Eines der beeindruckendsten Automuseen der Welt. Silver Arrows, Formel-1-Weltmeister-Autos, interaktive Geschichte des Motorsports — über 160 Fahrzeuge auf neun Ebenen. Tipp: Audio-Guide mitnehmen und die F1-Abteilung nicht verpassen. Ca. 2 Stunden einplanen.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">F1 &amp; Racing</span>
+            <span class="tag tag-action">Muss-Erlebnis</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">19:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🥩</span> Siegesessen — Steak Night</h3>
+          <div class="event-venue">Abacco's Steakhouse · Rotebühlplatz 10 ⭐ 4.5</div>
+          <div class="event-desc">Das Rennfahrer-Dinner. Steaks auf heißen Steinen selbst auf den Punkt gebracht — das ist nicht nur ein Essen, das ist ein Erlebnis. Perfekt für 9 Personen, rustikales Ambiente, großartige Qualität. Reservierung Pflicht! Rotwein-Toast auf den Junggesellen.</div>
+          <div class="event-tags">
+            <span class="tag tag-food">Steak Dinner</span>
+            <span class="tag tag-drinks">Wein</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">22:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🎶</span> Nachtrennen — Bars &amp; Clubs</h3>
+          <div class="event-venue">Stuttgarter Innenstadt / Bohnenviertel</div>
+          <div class="event-desc">Stuttgart hat exzellentes Nachtleben. Ab in das Bohnenviertel: dichte Bar-Szene, kurze Wege, diverse Musik. Challenge für den Junggesellen: Er muss in jeder Bar einen Shot spendieren. Offizielle Schlusszeit: wenn die Füße nicht mehr können.</div>
+          <div class="event-tags">
+            <span class="tag tag-night">Nachtleben</span>
+            <span class="tag tag-drinks">Party</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════ SAMSTAG ═══════════════ -->
+  <div class="day-section">
+    <div class="day-header">
+      <div class="day-number-block">
+        <span class="day-num">03</span>
+        <span class="day-label">Sa.</span>
+      </div>
+      <div class="day-title-block">
+        <h2>Race Day Two — Action &amp; Mission</h2>
+        <span class="day-date">Samstag, 2. Mai 2026 · ganztags</span>
+      </div>
+      <div class="day-theme-badge">⚑ SPRINT</div>
+    </div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="event-time">11:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🍳</span> Langes Frühstück / Brunch</h3>
+          <div class="event-venue">Carl's Brauhaus · Stauffenbergstraße 1 ⭐ 4.5</div>
+          <div class="event-desc">Ausschlafen ist erlaubt. Brunch im legendären Carl's Brauhaus direkt neben dem Schlossplatz — schwäbische Spezialitäten, hausgebrautes Bier, und eine der schönsten Locations in der Stadt. Perfekt um den Freitagabend abklingen zu lassen.</div>
+          <div class="event-tags">
+            <span class="tag tag-food">Brunch</span>
+            <span class="tag tag-drinks">Craft Beer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">13:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🔫</span> LASER TAG — Team-Kampf</h3>
+          <div class="event-venue">Lasertag Kornwestheim · Enzstraße 35 ⭐ 4.6</div>
+          <div class="event-desc">9 Piloten splitten sich in zwei Teams: "Redbull" vs. "Ferrari". Mehrere Runden Laser Tag — jeder muss ran. Das verlierende Team zahlt die nächste Getränkerunde. Hochprofessionelle Arena, verschiedene Spielmodi, perfekt für Gruppen. Ca. 20 Min. von Stuttgart-Mitte mit dem Auto.</div>
+          <div class="event-tags">
+            <span class="tag tag-action">Action</span>
+            <span class="tag tag-f1">Team-Duell</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">15:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🔐</span> ESCAPE ROOM — Pit-Lane Emergency</h3>
+          <div class="event-venue">TeamEscape Stuttgart · Theodor-Heuss-Straße 32 ⭐ 4.7</div>
+          <div class="event-desc">Szenario: "Der Junggeselle ist eingesperrt — ihr habt 60 Minuten, ihn zu befreien." Einer der besten Escape Rooms Stuttgarts, ideal für große Gruppen. Macht am meisten Spaß, wenn der Junggeselle (gespielt von einer Figur im Raum) angeblich nie herauskommt — und dann doch gerettet wird. Vorab buchen!</div>
+          <div class="event-tags">
+            <span class="tag tag-action">Action</span>
+            <span class="tag tag-f1">Mission</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">17:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🌆</span> Rooftop Drinks — Stadtpanorama</h3>
+          <div class="event-venue">Wolfram Bar &amp; Terrace · Wolframstraße 41 (JAZ Hotel Rooftop) ⭐ 4.3</div>
+          <div class="event-desc">Kurze Pause auf dem Rooftop mit Blick über Stuttgart. Cocktails mit Aussicht — hier sammelt ihr Kraft für den Abend. Ideal für Gruppenfotos mit der Skyline im Hintergrund. Das Feeling wie auf dem Podium.</div>
+          <div class="event-tags">
+            <span class="tag tag-drinks">Cocktails</span>
+            <span class="tag tag-f1">Podium View</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">19:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🎳</span> BOWLING — Pit Stop Challenge</h3>
+          <div class="event-venue">City Bowling · Schloßstraße 28-32 ⭐ 4.3</div>
+          <div class="event-desc">Bowling mit einem F1-Twist: Jeder Strike = Safe, jeder Gutter = Trinken. Bestellt Essen und Getränke direkt an der Bahn. Die legendäre Disco Bowling Night am Samstag verwandelt die ganze Anlage in eine Club-Atmosphäre. Perfekter Übergang in den Nachtmodus.</div>
+          <div class="event-tags">
+            <span class="tag tag-action">Bowling</span>
+            <span class="tag tag-drinks">Drinking Game</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">22:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🎉</span> HAUPTEVENT — Die große JGA-Nacht</h3>
+          <div class="event-venue">Stuttgarter Clubszene / VIP-Table-Option</div>
+          <div class="event-desc">Der große Samstagabend. Wenn Budget vorhanden: VIP-Tisch in einem Club reservieren (z.B. Perkins Park, Zollamt oder LKA Longhorn für Konzerte). Alternativ Bar-Hopping durch das Bohnenviertel und die Wilhelmstraße. Der Junggeselle trägt sein F1-Racing-Outfit — er ist die Hauptperson der Nacht. Challenge-Karten aktivieren: "Interview den nächsten Barmann auf Englisch", "Bestell einen Drink im Ferrari-Stil" usw.</div>
+          <div class="event-tags">
+            <span class="tag tag-night">Hauptparty</span>
+            <span class="tag tag-f1">Final Lap</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════ SONNTAG ═══════════════ -->
+  <div class="day-section">
+    <div class="day-header">
+      <div class="day-number-block">
+        <span class="day-num">04</span>
+        <span class="day-label">So.</span>
+      </div>
+      <div class="day-title-block">
+        <h2>Cool-Down Lap — Abschluss &amp; Legenden-Frühstück</h2>
+        <span class="day-date">Sonntag, 3. Mai 2026 · bis ca. 17:00 Uhr</span>
+      </div>
+      <div class="day-theme-badge">⚑ FINISH LINE</div>
+    </div>
+    <div class="timeline">
+
+      <div class="event">
+        <div class="event-time">10:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🍽️</span> Legenden-Abschlussfrühstück</h3>
+          <div class="event-venue">Carl's Brauhaus oder lokale Bäckerei / Café</div>
+          <div class="event-desc">Das Abschlussfrühstück im größten Stil: ausgiebig, ohne Eile. Jeder teilt seine Highlights des Wochenendes. Der "Fahrerwertungs-Sieger" wird gekrönt. Erinnerungsfotos, Rückblick, letzte Witze.</div>
+          <div class="event-tags">
+            <span class="tag tag-food">Abschluss</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">12:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🏛️</span> Porsche Museum — Optional für Motorsport-Nerds</h3>
+          <div class="event-venue">Porsche Museum · Porscheplatz 1, 70435 Stuttgart ⭐ 4.7</div>
+          <div class="event-desc">Für die, die noch Energie haben: Das Porsche Museum zeigt Le-Mans-Sieger, Formel-1-Rennwagen und 80 Jahre Motorsport-Geschichte. Über 80 Fahrzeuge, darunter der legendäre Porsche 917 und diverse F1-Boliden. Ideal als finales Highlight. Ca. 2 Stunden. Die anderen können gemütlich durch die Stadt bummeln oder sich in einem Café erholen.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">F1 Geschichte</span>
+            <span class="tag tag-action">Museum</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">14:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🍺</span> Letzter Stopp — Abschiedsbier</h3>
+          <div class="event-venue">Biergarten im Schlossgarten oder Carls Brauhaus</div>
+          <div class="event-desc">Das obligatorische letzte Bier zusammen. Prost auf den Junggesellen, seine zukünftige Frau, und auf die unvergesslichsten 4 Tage. Übergabe des "JGA-Goldpokals" — einer persönlichen Trophäe, die ihr im Vorfeld anfertigen lassen könnt (z.B. ein gravierter Rennhelm oder eine Mini-Trophy mit dem Namen).</div>
+          <div class="event-tags">
+            <span class="tag tag-drinks">Abschied</span>
+            <span class="tag tag-f1">Trophy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">16:00</div>
+        <div class="event-card">
+          <h3><span class="icon">🏁</span> Checkered Flag — Heimreise</h3>
+          <div class="event-venue">Stuttgart Hauptbahnhof / Autobahn</div>
+          <div class="event-desc">Das Rennen ist zu Ende. Gepäck holen, letzte Umarmungen, und zurück in die Heimat. Das Weekend-Memory-Video wird in der WhatsApp-Gruppe geteilt — am besten einen Freiwilligen für ein kleines Montage-Video im Vorfeld bestimmen.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">Finish</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BUDGET ÜBERSICHT -->
+  <div class="section-divider">Kosten-Übersicht (Schätzung pro Person)</div>
+  <div class="overview-grid" style="margin-bottom:2rem;">
+    <div class="overview-card">
+      <div class="ov-icon">🏎️</div>
+      <div class="ov-title">Go-Kart</div>
+      <div class="ov-sub">~30–45€ / Person</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🔫</div>
+      <div class="ov-title">Laser Tag</div>
+      <div class="ov-sub">~15–20€ / Person</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🔐</div>
+      <div class="ov-title">Escape Room</div>
+      <div class="ov-sub">~20–25€ / Person</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🏛️</div>
+      <div class="ov-title">Mercedes Museum</div>
+      <div class="ov-sub">~10€ / Person</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">🥩</div>
+      <div class="ov-title">Steak Dinner</div>
+      <div class="ov-sub">~45–60€ / Person</div>
+    </div>
+    <div class="overview-card">
+      <div class="ov-icon">💰</div>
+      <div class="ov-title">Gesamt (ca.)</div>
+      <div class="ov-sub">300–450€ / Person</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="checkered">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <p>JGA Stuttgart 2026 · Grand Prix Edition · 9 Piloten · 4 Tage · Unvergesslich</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const dayColors = { 1: '#8ab4f8', 2: '#E8002D', 3: '#FFD700', 4: '#6fcf97' };
+  const dayLabels = { 1: 'Do.', 2: 'Fr.', 3: 'Sa.', 4: 'So.' };
+
+  const locations = [
+    { day: 1, time: '22:30', name: 'Jigger & Spoon',          venue: 'Gymnasiumstraße 33',          lat: 48.7726, lng: 9.1763 },
+    { day: 2, time: '11:00', name: 'GO-KART Grand Prix',       venue: 'Kart-o-Mania · Langwiesenweg 30', lat: 48.7773, lng: 9.2401 },
+    { day: 2, time: '14:00', name: 'Mittagessen im Biergarten',venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7884, lng: 9.1844 },
+    { day: 2, time: '15:30', name: 'Mercedes-Benz Museum',     venue: 'Mercedesstraße 100',          lat: 48.7930, lng: 9.2322 },
+    { day: 2, time: '19:30', name: "Abacco's Steakhouse",      venue: 'Rotebühlplatz 10',            lat: 48.7754, lng: 9.1718 },
+    { day: 3, time: '11:00', name: "Carl's Brauhaus",          venue: 'Stauffenbergstraße 1',        lat: 48.7786, lng: 9.1793 },
+    { day: 3, time: '13:30', name: 'Laser Tag Kornwestheim',   venue: 'Enzstraße 35, Kornwestheim',  lat: 48.8617, lng: 9.1855 },
+    { day: 3, time: '15:30', name: 'TeamEscape Stuttgart',     venue: 'Theodor-Heuss-Straße 32',    lat: 48.7835, lng: 9.1756 },
+    { day: 3, time: '17:00', name: 'Wolfram Bar & Terrace',    venue: 'Wolframstraße 41',            lat: 48.7882, lng: 9.1932 },
+    { day: 3, time: '19:30', name: 'City Bowling',             venue: 'Schloßstraße 28–32',         lat: 48.7776, lng: 9.1689 },
+    { day: 4, time: '12:30', name: 'Porsche Museum',            venue: 'Porscheplatz 1',              lat: 48.8338, lng: 9.1525 },
+    { day: 4, time: '14:30', name: 'Letzter Stopp — Abschiedsbier', venue: 'Biergarten Schlossgarten', lat: 48.7884, lng: 9.1844 },
+  ];
+
+  const map = L.map('map', { zoomControl: true }).setView([48.800, 9.195], 12);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors © CARTO',
+    maxZoom: 19
+  }).addTo(map);
+
+  function makeIcon(day) {
+    const color = dayColors[day];
+    return L.divIcon({
+      className: '',
+      html: `<div style="width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+               <div style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.4);transform:rotate(45deg);"></div>
+             </div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+      popupAnchor: [0, -30]
+    });
+  }
+
+  let markers = [];
+
+  function renderMarkers(filterDay) {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+
+    const filtered = filterDay === 'all' ? locations : locations.filter(l => l.day === +filterDay);
+
+    filtered.forEach(loc => {
+      const color = dayColors[loc.day];
+      const marker = L.marker([loc.lat, loc.lng], { icon: makeIcon(loc.day) })
+        .bindPopup(`
+          <div class="map-popup-time" style="color:${color}">Tag ${loc.day} · ${dayLabels[loc.day]} · ${loc.time}</div>
+          <div class="map-popup-name">${loc.name}</div>
+          <div class="map-popup-venue">${loc.venue}</div>
+        `)
+        .addTo(map);
+      markers.push(marker);
+    });
+
+    if (markers.length) {
+      const group = L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.2));
+    }
+  }
+
+  renderMarkers('all');
+
+  document.querySelectorAll('.map-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.map-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderMarkers(tab.dataset.day);
+    });
+  });
+</script>
+</body>
+</html>
