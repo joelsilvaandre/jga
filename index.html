@@ -568,6 +568,95 @@
     color: #888;
   }
 
+  /* TEAMS */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .team-card {
+    background: var(--carbon);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .team-card-header {
+    padding: 1rem 1.25rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .team-color-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .team-logo-placeholder {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .team-name {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .team-constructor {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 0.1rem;
+  }
+
+  .team-members {
+    padding: 0.6rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .team-member {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .member-number {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    width: 28px;
+    text-align: right;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .member-name {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--light);
+  }
+
   @media (max-width: 600px) {
     .number-badge { display: none; }
     .day-header { flex-direction: column; }
@@ -633,6 +722,63 @@
       <div class="ov-title">Craft Beer &amp; Grill</div>
       <div class="ov-sub">Carl's Brauhaus</div>
     </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div class="section-divider">Die Teams</div>
+  <div class="teams-grid">
+
+    <!-- McLaren -->
+    <div class="team-card">
+      <div class="team-color-bar" style="background:#FF8000;"></div>
+      <div class="team-card-header">
+        <div class="team-logo-placeholder" style="background:#FF8000;">MCL</div>
+        <div>
+          <div class="team-name" style="color:#FF8000;">McLaren</div>
+          <div class="team-constructor">Constructor · Papaya</div>
+        </div>
+      </div>
+      <div class="team-members">
+        <div class="team-member"><span class="member-number" style="color:#FF8000;">01</span><span class="member-name">Joel</span></div>
+        <div class="team-member"><span class="member-number" style="color:#FF8000;">02</span><span class="member-name">Dario</span></div>
+        <div class="team-member"><span class="member-number" style="color:#FF8000;">03</span><span class="member-name">Rini</span></div>
+      </div>
+    </div>
+
+    <!-- Red Bull -->
+    <div class="team-card">
+      <div class="team-color-bar" style="background:#3671C6;"></div>
+      <div class="team-card-header">
+        <div class="team-logo-placeholder" style="background:#3671C6;">RBR</div>
+        <div>
+          <div class="team-name" style="color:#3671C6;">Red Bull</div>
+          <div class="team-constructor">Constructor · Navy</div>
+        </div>
+      </div>
+      <div class="team-members">
+        <div class="team-member"><span class="member-number" style="color:#3671C6;">04</span><span class="member-name">Denis</span></div>
+        <div class="team-member"><span class="member-number" style="color:#3671C6;">05</span><span class="member-name">Guilherme</span></div>
+        <div class="team-member"><span class="member-number" style="color:#3671C6;">06</span><span class="member-name">Gianni</span></div>
+      </div>
+    </div>
+
+    <!-- Ferrari -->
+    <div class="team-card">
+      <div class="team-color-bar" style="background:#E8002D;"></div>
+      <div class="team-card-header">
+        <div class="team-logo-placeholder" style="background:#E8002D;">SF</div>
+        <div>
+          <div class="team-name" style="color:#E8002D;">Ferrari</div>
+          <div class="team-constructor">Constructor · Scuderia</div>
+        </div>
+      </div>
+      <div class="team-members">
+        <div class="team-member"><span class="member-number" style="color:#E8002D;">07</span><span class="member-name">Davide</span></div>
+        <div class="team-member"><span class="member-number" style="color:#E8002D;">08</span><span class="member-name">Gabriele</span></div>
+        <div class="team-member"><span class="member-number" style="color:#E8002D;">09</span><span class="member-name">Danilo</span></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- MAP -->
