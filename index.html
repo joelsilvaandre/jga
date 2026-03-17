@@ -799,17 +799,29 @@
       </div>
       <div class="day-title-block">
         <h2>Qualifying Night — Anreise &amp; Eröffnung</h2>
-        <span class="day-date">Donnerstag, 30. April 2026 · ab 22:00 Uhr</span>
+        <span class="day-date">Donnerstag, 30. April 2026 · ab 19:30 Uhr</span>
       </div>
       <div class="day-theme-badge">⚑ QUALIFYING</div>
     </div>
     <div class="timeline">
 
       <div class="event">
-        <div class="event-time">22:00</div>
+        <div class="event-time">19:30</div>
+        <div class="event-card">
+          <h3><span class="icon">🚂</span> Abfahrt Zürich HB</h3>
+          <div class="event-venue">Zürich Hauptbahnhof</div>
+          <div class="event-desc">Alle Piloten versammeln sich am Zürich HB. Ankunft in Stuttgart um 22:40 Uhr. Die Reise beginnt — erster Umtrunk im Zug.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">Anreise</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">22:40</div>
         <div class="event-card">
           <h3><span class="icon">🚗</span> Ankunft &amp; Check-in</h3>
-          <div class="event-venue">Zentrales Airbnb / Hotel Stuttgart-Mitte</div>
+          <div class="event-venue">Premier Inn Stuttgart</div>
           <div class="event-desc">Alle 9 Piloten treffen ein. Empfang mit eiskalten Bieren und dem obligatorischen JGA-Starterpaket: F1-Startnummer, Rennfahrer-Krawatte fürs Wochenende und ein kleines Racing-Goodie-Bag für den Junggesellen (Rennhelm-Shot-Glas, F1-Kalender, etc.).</div>
           <div class="event-tags">
             <span class="tag tag-f1">F1 Ritual</span>
@@ -866,7 +878,7 @@
         <div class="event-card">
           <h3><span class="icon">☕</span> Fahrer-Frühstück</h3>
           <div class="event-venue">Zuhause / Bäckerei in der Nähe</div>
-          <div class="event-desc">Großes gemeinsames Frühstück in der Unterkunft — Kraft tanken für den härtesten Tag. Jeder bringt Proviant mit. Mit F1-Playlist im Hintergrund und dem Klassiker: wer am spätesten aufsteht, macht das Frühstück.</div>
+          <div class="event-desc">Großes gemeinsames Frühstück im Premier Inn — Kraft tanken für den härtesten Tag. Jeder bringt Proviant mit. Mit F1-Playlist im Hintergrund und dem Klassiker: wer am spätesten aufsteht, macht das Frühstück.</div>
           <div class="event-tags">
             <span class="tag tag-food">Frühstück</span>
           </div>
@@ -1198,6 +1210,8 @@
   const dayLabels = { 1: 'Do.', 2: 'Fr.', 3: 'Sa.', 4: 'So.' };
 
   const locations = [
+    { day: 1, time: '19:30', name: 'Zürich Hauptbahnhof',      venue: 'Bahnhofplatz, Zürich',            lat: 47.3779, lng: 8.5403 },
+    { day: 1, time: '22:40', name: 'Premier Inn Stuttgart',    venue: 'Wolframstraße 29, Stuttgart-Mitte', lat: 48.7872, lng: 9.1920 },
     { day: 1, time: '22:30', name: 'Jigger & Spoon',          venue: 'Gymnasiumstraße 33',          lat: 48.7726, lng: 9.1763 },
     { day: 2, time: '11:00', name: 'GO-KART Grand Prix',       venue: 'Kart-o-Mania · Langwiesenweg 30', lat: 48.7773, lng: 9.2401 },
     { day: 2, time: '14:00', name: 'Mittagessen im Biergarten',venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7884, lng: 9.1844 },
