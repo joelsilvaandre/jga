@@ -447,6 +447,61 @@
     content: ''; flex: 1; height: 1px; background: #2a2a2a;
   }
 
+  /* COUNTDOWN */
+  .countdown-wrap {
+    text-align: center;
+    margin: 0 0 3rem;
+  }
+  .countdown-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.2rem;
+  }
+  .countdown-units {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  .countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .countdown-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--white);
+    background: var(--dark);
+    border: 1px solid #2a2a2a;
+    border-bottom: 3px solid var(--red);
+    padding: 0.4rem 0.6rem;
+    min-width: 72px;
+    text-align: center;
+  }
+  .countdown-unit-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #555;
+    margin-top: 0.4rem;
+  }
+  .countdown-sep {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #333;
+    line-height: 1.22;
+    user-select: none;
+  }
+
   /* FOOTER */
   footer {
     position: relative;
@@ -732,6 +787,30 @@
 
   <!-- TEAMS -->
   <div class="section-divider">Die Teams</div>
+  <div class="countdown-wrap" id="countdown-wrap">
+    <div class="countdown-label">Team-Reveal in</div>
+    <div class="countdown-units">
+      <div class="countdown-unit">
+        <div class="countdown-value" id="cd-days">--</div>
+        <div class="countdown-unit-label">Tage</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="cd-hours">--</div>
+        <div class="countdown-unit-label">Stunden</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="cd-mins">--</div>
+        <div class="countdown-unit-label">Minuten</div>
+      </div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit">
+        <div class="countdown-value" id="cd-secs">--</div>
+        <div class="countdown-unit-label">Sekunden</div>
+      </div>
+    </div>
+  </div>
   <div class="teams-grid">
 
     <!-- McLaren -->
@@ -1211,6 +1290,28 @@
       el.textContent = '???';
     });
   }
+
+  // Countdown to revealDate
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tickCountdown() {
+    const diff = revealDate - new Date();
+    const wrap = document.getElementById('countdown-wrap');
+    if (!wrap) return;
+    if (diff <= 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+    document.getElementById('cd-days').textContent  = pad(days);
+    document.getElementById('cd-hours').textContent = pad(hours);
+    document.getElementById('cd-mins').textContent  = pad(mins);
+    document.getElementById('cd-secs').textContent  = pad(secs);
+  }
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
 </script>
 
 <script>
@@ -1262,7 +1363,7 @@
     { day: 2, time: '15:30', name: 'Mercedes-Benz Museum',     venue: 'Mercedesstraße 100',          lat: 48.7885, lng: 9.2340, gmaps: 'https://maps.app.goo.gl/MstMoEwgt5M2e6ep9' },
     { day: 2, time: '19:30', name: "Abacco's Steakhouse",      venue: 'Rotebühlplatz 10',            lat: 48.7748, lng: 9.1729, gmaps: 'https://maps.app.goo.gl/af61ZTvg6MR9Jzm76' },
     { day: 3, time: '11:00', name: "Carl's Brauhaus",          venue: 'Stauffenbergstraße 1',        lat: 48.7795, lng: 9.1800, gmaps: 'https://maps.app.goo.gl/Jx41PK5pXDZxqBmj8' },
-    { day: 3, time: '14:00', name: 'Stuttgarter Frühlingsfest', venue: 'Cannstatter Wasen, Bad Cannstatt', lat: 48.7990, lng: 9.2151, gmaps: 'https://maps.app.goo.gl/pNKeny8m6ZyvWJuD9' },
+    { day: 3, time: '14:00', name: 'Stuttgarter Frühlingsfest', venue: 'Cannstatter Wasen, Bad Cannstatt', lat: 48.7990, lng: 9.2151, gmaps: 'https://maps.app.goo.gl/BWBpfQPPGiCjiKH96' },
     { day: 3, time: '17:00', name: 'Wolfram Bar & Terrace',    venue: 'Wolframstraße 41',            lat: 48.7882, lng: 9.1932, gmaps: 'https://maps.google.com/?q=JAZ+Hotel+Stuttgart+Wolframstra%C3%9Fe+41' },
     { day: 3, time: '19:30', name: 'City Bowling',             venue: 'Schloßstraße 28–32',         lat: 48.7776, lng: 9.1689, gmaps: 'https://maps.google.com/?q=City+Bowling+Stuttgart+Schlo%C3%9Fstra%C3%9Fe+28' },
     { day: 4, time: '12:30', name: 'Porsche Museum',            venue: 'Porscheplatz 1',              lat: 48.8343, lng: 9.1526, gmaps: 'https://maps.app.goo.gl/qZe4fja3eNwWJmaJ7' },
