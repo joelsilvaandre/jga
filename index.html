@@ -1170,6 +1170,16 @@
 </footer>
 
 <script>
+  // Reveal team member names on 30.04.2026 at 20:00
+  const revealDate = new Date(2026, 3, 30, 20, 0, 0); // month is 0-indexed
+  if (new Date() < revealDate) {
+    document.querySelectorAll('.member-name').forEach(el => {
+      el.textContent = '???';
+    });
+  }
+</script>
+
+<script>
   const audio = document.getElementById('f1-audio');
   const icon  = document.getElementById('audio-icon');
   const label = document.getElementById('audio-label');
