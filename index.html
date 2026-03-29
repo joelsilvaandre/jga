@@ -1254,20 +1254,20 @@
   const dayLabels = { 1: 'Do.', 2: 'Fr.', 3: 'Sa.', 4: 'So.' };
 
   const locations = [
-    { day: 1, time: '19:30', name: 'Zürich Hauptbahnhof',      venue: 'Bahnhofplatz, Zürich',            lat: 47.3779, lng: 8.5403 },
-    { day: 1, time: '22:40', name: 'Premier Inn Stuttgart',    venue: 'Wolframstraße 29, Stuttgart-Mitte', lat: 48.7872, lng: 9.1920 },
-    { day: 1, time: '22:30', name: 'Jigger & Spoon',          venue: 'Gymnasiumstraße 33',          lat: 48.7726, lng: 9.1763 },
-    { day: 2, time: '11:00', name: 'GO-KART Grand Prix',       venue: 'Kart-o-Mania · Langwiesenweg 30', lat: 48.7773, lng: 9.2401 },
-    { day: 2, time: '14:00', name: 'Mittagessen im Biergarten',venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7884, lng: 9.1844 },
-    { day: 2, time: '15:30', name: 'Mercedes-Benz Museum',     venue: 'Mercedesstraße 100',          lat: 48.7930, lng: 9.2322 },
-    { day: 2, time: '19:30', name: "Abacco's Steakhouse",      venue: 'Rotebühlplatz 10',            lat: 48.7754, lng: 9.1718 },
-    { day: 3, time: '11:00', name: "Carl's Brauhaus",          venue: 'Stauffenbergstraße 1',        lat: 48.7786, lng: 9.1793 },
-    { day: 3, time: '14:00', name: 'Stuttgarter Frühlingsfest', venue: 'Cannstatter Wasen, Bad Cannstatt', lat: 48.7990, lng: 9.2151 },
-    { day: 3, time: '17:00', name: 'Wolfram Bar & Terrace',    venue: 'Wolframstraße 41',            lat: 48.7882, lng: 9.1932 },
-    { day: 3, time: '19:30', name: 'City Bowling',             venue: 'Schloßstraße 28–32',         lat: 48.7776, lng: 9.1689 },
-    { day: 4, time: '12:30', name: 'Porsche Museum',            venue: 'Porscheplatz 1',              lat: 48.8338, lng: 9.1525 },
-    { day: 4, time: '12:30', name: 'Stuttgart Stadtbummel',    venue: 'Schlossplatz · Fernsehturm · Killesbergpark', lat: 48.7784, lng: 9.1800 },
-    { day: 4, time: '14:30', name: 'Letzter Stopp — Abschiedsbier', venue: 'Biergarten Schlossgarten', lat: 48.7884, lng: 9.1844 },
+    { day: 1, time: '19:30', name: 'Zürich Hauptbahnhof',      venue: 'Bahnhofplatz, Zürich',            lat: 47.3779, lng: 8.5403, gmaps: 'https://maps.app.goo.gl/zGgWqufDnXrLNfdg8' },
+    { day: 1, time: '22:40', name: 'Premier Inn Stuttgart',    venue: 'Wolframstraße 29, Stuttgart-Mitte', lat: 48.7912, lng: 9.1858, gmaps: 'https://maps.app.goo.gl/QdMpifJM9PLZKJzV9' },
+    { day: 1, time: '22:30', name: 'Jigger & Spoon',          venue: 'Gymnasiumstraße 33',          lat: 48.7776, lng: 9.1719, gmaps: 'https://maps.app.goo.gl/8zpEyDVzVmjDNNoo6' },
+    { day: 2, time: '11:00', name: 'GO-KART Grand Prix',       venue: 'Kart-o-Mania · Langwiesenweg 30', lat: 48.7824, lng: 9.2330, gmaps: 'https://maps.app.goo.gl/vsCHPFe5nqZKJsUL9' },
+    { day: 2, time: '14:00', name: 'Mittagessen im Biergarten',venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7846, lng: 9.1862, gmaps: 'https://maps.app.goo.gl/Xf1qTbCkEz3zwE2J8' },
+    { day: 2, time: '15:30', name: 'Mercedes-Benz Museum',     venue: 'Mercedesstraße 100',          lat: 48.7885, lng: 9.2340, gmaps: 'https://maps.app.goo.gl/MstMoEwgt5M2e6ep9' },
+    { day: 2, time: '19:30', name: "Abacco's Steakhouse",      venue: 'Rotebühlplatz 10',            lat: 48.7748, lng: 9.1729, gmaps: 'https://maps.app.goo.gl/af61ZTvg6MR9Jzm76' },
+    { day: 3, time: '11:00', name: "Carl's Brauhaus",          venue: 'Stauffenbergstraße 1',        lat: 48.7795, lng: 9.1800, gmaps: 'https://maps.app.goo.gl/Jx41PK5pXDZxqBmj8' },
+    { day: 3, time: '14:00', name: 'Stuttgarter Frühlingsfest', venue: 'Cannstatter Wasen, Bad Cannstatt', lat: 48.7990, lng: 9.2151, gmaps: 'https://maps.app.goo.gl/pNKeny8m6ZyvWJuD9' },
+    { day: 3, time: '17:00', name: 'Wolfram Bar & Terrace',    venue: 'Wolframstraße 41',            lat: 48.7882, lng: 9.1932, gmaps: 'https://maps.google.com/?q=JAZ+Hotel+Stuttgart+Wolframstra%C3%9Fe+41' },
+    { day: 3, time: '19:30', name: 'City Bowling',             venue: 'Schloßstraße 28–32',         lat: 48.7776, lng: 9.1689, gmaps: 'https://maps.google.com/?q=City+Bowling+Stuttgart+Schlo%C3%9Fstra%C3%9Fe+28' },
+    { day: 4, time: '12:30', name: 'Porsche Museum',            venue: 'Porscheplatz 1',              lat: 48.8343, lng: 9.1526, gmaps: 'https://maps.app.goo.gl/qZe4fja3eNwWJmaJ7' },
+    { day: 4, time: '12:30', name: 'Stuttgart Stadtbummel',    venue: 'Schlossplatz · Fernsehturm · Killesbergpark', lat: 48.7789, lng: 9.1797, gmaps: 'https://maps.app.goo.gl/voY2YmXDLkazugKK6' },
+    { day: 4, time: '14:30', name: 'Letzter Stopp — Abschiedsbier', venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7846, lng: 9.1862, gmaps: 'https://maps.app.goo.gl/Xf1qTbCkEz3zwE2J8' },
   ];
 
   const map = L.map('map', { zoomControl: true }).setView([48.800, 9.195], 12);
@@ -1305,6 +1305,7 @@
           <div class="map-popup-time" style="color:${color}">Tag ${loc.day} · ${dayLabels[loc.day]} · ${loc.time}</div>
           <div class="map-popup-name">${loc.name}</div>
           <div class="map-popup-venue">${loc.venue}</div>
+          <a href="${loc.gmaps}" target="_blank" rel="noopener" style="display:inline-block;margin-top:0.5rem;font-size:0.75rem;color:${color};text-decoration:none;border:1px solid ${color};border-radius:3px;padding:2px 8px;">↗ Google Maps</a>
         `)
         .addTo(map);
       markers.push(marker);
