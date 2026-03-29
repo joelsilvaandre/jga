@@ -728,7 +728,7 @@
   <div class="hero-track"></div>
   <div class="number-badge">JGA</div>
   <div class="hero-content">
-    <div class="flag-label">Junggesellenabschied 2026</div>
+    <div class="flag-label">Danilo's Junggesellenabschied</div>
     <h1 class="hero-title">GRAND<br><span class="accent">PRIX</span><br>STUTTGART</h1>
     <p class="hero-sub">30. April — 3. Mai · 9 Piloten</p>
     <div class="hero-meta">
@@ -1319,20 +1319,12 @@
   const icon  = document.getElementById('audio-icon');
   const label = document.getElementById('audio-label');
 
-  function startAudio() {
-    audio.play().then(() => {
-      icon.textContent  = '■';
-      label.textContent = 'Sound ausschalten';
-      document.removeEventListener('click', startAudio);
-    }).catch(() => {});
-  }
-
-  // Try immediate autoplay, fall back to first user interaction
+  // Try immediate autoplay, fall back to button click only
   audio.play().then(() => {
     icon.textContent  = '■';
     label.textContent = 'Sound ausschalten';
   }).catch(() => {
-    document.addEventListener('click', startAudio);
+    // autoplay blocked — button click will trigger toggleAudio which handles play
   });
 
   function toggleAudio() {
