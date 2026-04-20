@@ -1134,7 +1134,7 @@
       </div>
       <div class="day-title-block">
         <h2>Cool-Down Lap — Abschluss &amp; Legenden-Frühstück</h2>
-        <span class="day-date">Sonntag, 3. Mai 2026 · bis ca. 17:00 Uhr</span>
+        <span class="day-date">Sonntag, 3. Mai 2026 · Rückreise 14:15 ab Stuttgart Hbf</span>
       </div>
       <div class="day-theme-badge">⚑ FINISH LINE</div>
     </div>
@@ -1190,11 +1190,11 @@
       </div>
 
       <div class="event">
-        <div class="event-time">14:30</div>
+        <div class="event-time">13:15</div>
         <div class="event-card">
           <h3><span class="icon">🍺</span> Letzter Stopp — Abschiedsbier</h3>
           <div class="event-venue">Biergarten im Schlossgarten oder Carls Brauhaus</div>
-          <div class="event-desc">Das obligatorische letzte Bier zusammen. Prost auf den Junggesellen, seine zukünftige Frau, und auf die unvergesslichsten 4 Tage. Idee: Übergabe des "JGA-Goldpokals" — einer persönlichen Trophäe (z.B. ein gravierter Rennhelm oder eine Mini-Trophy mit dem Namen).</div>
+          <div class="event-desc">Das obligatorische letzte Bier zusammen. Prost auf den Junggesellen, seine zukünftige Frau, und auf die unvergesslichsten 4 Tage. Idee: Übergabe des "JGA-Goldpokals" — einer persönlichen Trophäe (z.B. ein gravierter Rennhelm oder eine Mini-Trophy mit dem Namen). Kurz halten — der Zug wartet nicht.</div>
           <div class="event-tags">
             <span class="tag tag-drinks">Abschied</span>
             <span class="tag tag-f1">Trophy</span>
@@ -1203,13 +1203,26 @@
       </div>
 
       <div class="event">
-        <div class="event-time">16:00</div>
+        <div class="event-time">14:00</div>
         <div class="event-card">
-          <h3><span class="icon">🏁</span> Checkered Flag — Heimreise</h3>
-          <div class="event-venue">Stuttgart Hauptbahnhof / Autobahn</div>
-          <div class="event-desc">Das Rennen ist zu Ende. Gepäck holen, letzte Umarmungen, und zurück in die Heimat. Das Weekend-Memory-Video wird in der WhatsApp-Gruppe geteilt — am besten einen Freiwilligen für ein kleines Montage-Video im Vorfeld bestimmen.</div>
+          <h3><span class="icon">🎒</span> Boxenstopp — Gepäck &amp; Gleis</h3>
+          <div class="event-venue">Stuttgart Hauptbahnhof</div>
+          <div class="event-desc">Spätestens 14:00 Uhr am Hbf sein: Gepäck nochmal checken, Gleis suchen, Wasser/Proviant für die Rückfahrt besorgen. 15 Minuten Puffer vor Abfahrt.</div>
+          <div class="event-tags">
+            <span class="tag tag-f1">Box-Stopp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="event-time">14:15</div>
+        <div class="event-card">
+          <h3><span class="icon">🚂</span> Checkered Flag — Zug nach Zürich HB</h3>
+          <div class="event-venue">Abfahrt Stuttgart Hbf · Ankunft Zürich HB</div>
+          <div class="event-desc">Abfahrt 14:15 Uhr ab Stuttgart Hauptbahnhof Richtung Zürich HB. Das Rennen ist zu Ende. Letzte Umarmungen auf dem Bahnsteig, dann gemeinsam in den Zug — Cool-Down-Bier on board. Das Weekend-Memory-Video wird in der WhatsApp-Gruppe geteilt — am besten einen Freiwilligen für ein kleines Montage-Video im Vorfeld bestimmen.</div>
           <div class="event-tags">
             <span class="tag tag-f1">Finish</span>
+            <span class="tag tag-action">Heimreise</span>
           </div>
         </div>
       </div>
@@ -1356,7 +1369,8 @@
     { day: 3, time: '18:00', name: 'Premier Inn Stuttgart',    venue: 'Wolframstraße 29, Stuttgart-Mitte', lat: 48.7912, lng: 9.1858, gmaps: 'https://maps.app.goo.gl/QdMpifJM9PLZKJzV9' },
     { day: 4, time: '12:30', name: 'Porsche Museum',            venue: 'Porscheplatz 1',              lat: 48.8343, lng: 9.1526, gmaps: 'https://maps.app.goo.gl/qZe4fja3eNwWJmaJ7' },
     { day: 4, time: '12:30', name: 'Stuttgart Stadtbummel',    venue: 'Schlossplatz · Fernsehturm · Killesbergpark', lat: 48.7789, lng: 9.1797, gmaps: 'https://maps.app.goo.gl/voY2YmXDLkazugKK6' },
-    { day: 4, time: '14:30', name: 'Letzter Stopp — Abschiedsbier', venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7846, lng: 9.1862, gmaps: 'https://maps.app.goo.gl/Xf1qTbCkEz3zwE2J8' },
+    { day: 4, time: '13:15', name: 'Letzter Stopp — Abschiedsbier', venue: 'Schlossgarten · Am Schlossgarten 18', lat: 48.7846, lng: 9.1862, gmaps: 'https://maps.app.goo.gl/Xf1qTbCkEz3zwE2J8' },
+    { day: 4, time: '14:15', name: 'Zug nach Zürich HB',         venue: 'Stuttgart Hauptbahnhof',      lat: 48.7838, lng: 9.1819, gmaps: 'https://maps.app.goo.gl/7ngTLH1kM7ULW9xF7' },
   ];
 
   const map = L.map('map', { zoomControl: true }).setView([48.800, 9.195], 12);
